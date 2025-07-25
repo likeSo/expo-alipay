@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["ExpoAlipayModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.alipay.ExpoAlipayModule"]
+  }
+}
