@@ -78,3 +78,6 @@ const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
 console.log(onPayResultPayload);
 ```
 
+# 联系我
+
+QQ 群：682911244
