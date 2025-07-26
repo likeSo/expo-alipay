@@ -1,48 +1,47 @@
 import ExpoModulesCore
+import AlipaySDK
 
 public class ExpoAlipayModule: Module {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
+    static var moduleInstance: ExpoAlipayModule?
+    
   public func definition() -> ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('ExpoAlipay')` in JavaScript.
-    Name("ExpoAlipay")
-
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants([
-      "PI": Double.pi
-    ])
-
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
-
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      return "Hello world! 👋"
-    }
-
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { (value: String) in
-      // Send an event to JavaScript.
-      self.sendEvent("onChange", [
-        "value": value
-      ])
-    }
-
-    // Enables the module to be used as a native view. Definition components that are accepted as part of the
-    // view definition: Prop, Events.
-    View(ExpoAlipayView.self) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { (view: ExpoAlipayView, url: URL) in
-        if view.webView.url != url {
-          view.webView.load(URLRequest(url: url))
-        }
+      Name("ExpoAlipay")
+      
+      
+      Events("onPayResult", "onAuthResult")
+      
+      OnCreate {
+          Self.moduleInstance = self
       }
-
-      Events("onLoad")
-    }
+      
+      AsyncFunction("setSandboxMode") { (mode: String) in
+          return true
+      }
+      
+      AsyncFunction("registerApp") { (appId: String) in
+          return true
+      }
+      
+      AsyncFunction("pay") { (options: PayOptions, promise: Promise) in
+          AlipaySDK.defaultService()
+              .payOrder(options.orderInfo,
+                        fromScheme: options.scheme ?? "",
+                        fromUniversalLink: options.universalLink) { result in
+                  promise.resolve(result)
+              }
+      }
+      
+      AsyncFunction("auth") { (options: AuthOptions, promise: Promise) in
+          AlipaySDK.defaultService()
+          AlipaySDK.defaultService()
+              .auth_V2(withInfo: options.authInfo,
+                       fromScheme: options.scheme ?? "") { result in
+                  promise.resolve(result)
+              }
+      }
+      
+      AsyncFunction("getVersion") {
+          return AlipaySDK.defaultService().currentVersion()
+      }
   }
 }

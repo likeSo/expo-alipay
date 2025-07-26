@@ -1,7 +1,8 @@
 {
   "platforms": ["apple", "android", "web"],
   "apple": {
-    "modules": ["ExpoAlipayModule"]
+    "modules": ["ExpoAlipayModule"],
+    "appDelegateSubscribers": ["AppLifecycleDelegate"]
   },
   "android": {
     "modules": ["expo.modules.alipay.ExpoAlipayModule"]

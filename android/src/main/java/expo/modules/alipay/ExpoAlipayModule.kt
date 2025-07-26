@@ -1,50 +1,68 @@
 package expo.modules.alipay
 
+import android.util.Log
+import com.alipay.sdk.app.AlipayApi
+import com.alipay.sdk.app.AuthTask
+import com.alipay.sdk.app.EnvUtils
+import com.alipay.sdk.app.PayTask
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.net.URL
 
 class ExpoAlipayModule : Module() {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
-  override fun definition() = ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('ExpoAlipay')` in JavaScript.
-    Name("ExpoAlipay")
+    override fun definition() = ModuleDefinition {
+        Name("ExpoAlipay")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants(
-      "PI" to Math.PI
-    )
+        Events("onPayResult", "onAuthResult")
 
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
+        AsyncFunction("registerApp") { appId: String ->
+            appContext.reactContext.let {
+                AlipayApi.registerApp(it, appId)
+            }
+        }
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      "Hello world! 👋"
+        AsyncFunction("getVersion") {
+            val payTask = PayTask(appContext.currentActivity)
+            return@AsyncFunction payTask.version
+        }
+
+        AsyncFunction("setSandboxMode") { mode: String ->
+
+            when (mode) {
+                "sandbox" -> {
+                    EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX)
+                }
+
+                "online" -> {
+                    EnvUtils.setEnv(EnvUtils.EnvEnum.ONLINE)
+                }
+
+                "pre_sandbox" -> {
+                    EnvUtils.setEnv(EnvUtils.EnvEnum.PRE_SANDBOX)
+                }
+            }
+        }
+
+        AsyncFunction("auth") { options: AuthOptions, promise: Promise ->
+            val runnable = Runnable {
+                val alipay = AuthTask(appContext.currentActivity)
+                val result = alipay.authV2(options.authInfo, true)
+                promise.resolve(result)
+                sendEvent("onAuthResult", result)
+            }
+            Thread(runnable).start()
+        }
+
+        AsyncFunction("pay") { options: PayOptions, promise: Promise ->
+            val runnable = Runnable {
+                val alipay = PayTask(appContext.currentActivity)
+                val result = alipay.payV2(options.orderInfo, true)
+                promise.resolve(result)
+                sendEvent("onPayResult", result)
+            }
+
+            Thread(runnable).start()
+        }
     }
-
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { value: String ->
-      // Send an event to JavaScript.
-      sendEvent("onChange", mapOf(
-        "value" to value
-      ))
-    }
-
-    // Enables the module to be used as a native view. Definition components that are accepted as part of
-    // the view definition: Prop, Events.
-    View(ExpoAlipayView::class) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { view: ExpoAlipayView, url: URL ->
-        view.webView.loadUrl(url.toString())
-      }
-      // Defines an event that the view can send to JavaScript.
-      Events("onLoad")
-    }
-  }
 }

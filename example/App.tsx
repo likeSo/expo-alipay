@@ -1,37 +1,29 @@
 import { useEvent } from 'expo';
-import ExpoAlipay, { ExpoAlipayView } from 'expo-alipay';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import ExpoAlipay from 'expo-alipay';
+import { Alert, Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 export default function App() {
-  const onChangePayload = useEvent(ExpoAlipay, 'onChange');
+  const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{ExpoAlipay.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{ExpoAlipay.hello()}</Text>
-        </Group>
         <Group name="Async functions">
           <Button
-            title="Set value"
+            title="支付"
             onPress={async () => {
-              await ExpoAlipay.setValueAsync('Hello from JS!');
+              const result = await ExpoAlipay.pay({
+                orderInfo: 'orderString',
+                scheme: undefined,
+                universalLink: undefined
+              });
+              console.log(result);
             }}
           />
         </Group>
         <Group name="Events">
           <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <ExpoAlipayView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
         </Group>
       </ScrollView>
     </SafeAreaView>
