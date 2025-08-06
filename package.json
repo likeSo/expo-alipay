@@ -1,6 +1,6 @@
 {
   "name": "expo-alikit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React Native Alipay support",
   "main": "build/index.js",
   "types": "build/index.d.ts",
