@@ -2,14 +2,14 @@
 
 支付宝支付与授权登录。React Native Alipay support.
 
-⚠️BETA WARNING: 本项目目前处于beta版本，如有任何问题，欢迎issue联系，但谨慎在生产项目中使用。⚠️
+⚠️BETA WARNING: 本项目目前处于beta版本，如有任何问题，欢迎issue联系，但目前谨慎在生产项目中使用。⚠️
 
 # 安装
 
 ```shell
-npx expo install expo-alipay
+npx expo install expo-alikit
 ```
-
+为什么是`expo-alikit`？因为`expo-alipay`的名字在npm中已经被占用，但后者看起来只是一个demo项目，目前我正在尝试联系作者，看看是否可以让他删掉那个仓库。
 # 配置
 
 支付宝支付和授权登录，由于会涉及到唤起支付宝，跳回你的app，为了让支付宝能识别你的app，你需要配置URL Scheme或者 Universal Link。
@@ -81,3 +81,7 @@ console.log(onPayResultPayload);
 # 联系我
 
 QQ 群：682911244
+
+# Roadmap
+
+- [ ] 给支付宝返回数据添加类型。

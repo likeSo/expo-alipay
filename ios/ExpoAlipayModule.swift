@@ -43,5 +43,15 @@ public class ExpoAlipayModule: Module {
       AsyncFunction("getVersion") {
           return AlipaySDK.defaultService().currentVersion()
       }
+      
+      AsyncFunction("startLog") {
+          AlipaySDK.startLog { log in
+              print("ExpoAlipayModule：\(String(describing: log))")
+          }
+      }
+      
+      AsyncFunction("stopLog") {
+          AlipaySDK.stopLog()
+      }
   }
 }

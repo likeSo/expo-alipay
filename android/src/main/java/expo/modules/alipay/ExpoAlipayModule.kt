@@ -64,5 +64,10 @@ class ExpoAlipayModule : Module() {
 
             Thread(runnable).start()
         }
+
+
+        AsyncFunction("startLog") {
+
+        }
     }
 }
