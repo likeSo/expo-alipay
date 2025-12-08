@@ -2,8 +2,6 @@
 
 支付宝支付与授权登录。React Native Alipay support.
 
-⚠️BETA WARNING: 本项目目前处于beta版本，如有任何问题，欢迎issue联系，但目前谨慎在生产项目中使用。⚠️
-
 # 安装
 
 ```shell
@@ -76,6 +74,7 @@ import ExpoAlipay from "expo-alikit";
 
 /// 通过这种方式监听回调结果
 const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
+/// 你也可以用`ExpoAlipay.addListener()`语法
 
 console.log(onPayResultPayload);
 ```
