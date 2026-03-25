@@ -33,7 +33,6 @@ public class ExpoAlipayModule: Module {
       
       AsyncFunction("auth") { (options: AuthOptions, promise: Promise) in
           AlipaySDK.defaultService()
-          AlipaySDK.defaultService()
               .auth_V2(withInfo: options.authInfo,
                        fromScheme: options.scheme ?? "") { result in
                   promise.resolve(result)

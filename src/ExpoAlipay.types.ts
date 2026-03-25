@@ -29,17 +29,23 @@
 
 */
 
-export type ExpoAlipayModuleEvents = {
-  onPayResult: (params: any) => void;
-  onAuthResult: (params: any) => void;
-};
-
 export type PayResultEventPayload = {
-
+  resultStatus?: string;
+  result_status?: string;
+  result?: string;
+  memo?: string;
 };
 
 export type AuthResultEventPayload = {
+  resultStatus?: string;
+  result_status?: string;
+  result?: string;
+  memo?: string;
+};
 
+export type ExpoAlipayModuleEvents = {
+  onPayResult: (params: PayResultEventPayload) => void;
+  onAuthResult: (params: AuthResultEventPayload) => void;
 };
 
 export type PayOptions = {
