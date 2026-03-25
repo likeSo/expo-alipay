@@ -6,6 +6,8 @@ import com.alipay.sdk.app.AuthTask
 import com.alipay.sdk.app.EnvUtils
 import com.alipay.sdk.app.PayTask
 import expo.modules.kotlin.Promise
+import expo.modules.kotlin.exception.CodedException
+import expo.modules.kotlin.exception.toCodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.net.URL
@@ -17,7 +19,7 @@ class ExpoAlipayModule : Module() {
         Events("onPayResult", "onAuthResult")
 
         AsyncFunction("registerApp") { appId: String ->
-            appContext.reactContext.let {
+            appContext.reactContext?.let {
                 AlipayApi.registerApp(it, appId)
             }
         }
@@ -46,20 +48,28 @@ class ExpoAlipayModule : Module() {
 
         AsyncFunction("auth") { options: AuthOptions, promise: Promise ->
             val runnable = Runnable {
-                val alipay = AuthTask(appContext.currentActivity)
-                val result = alipay.authV2(options.authInfo, true)
-                promise.resolve(result)
-                sendEvent("onAuthResult", result)
+                try {
+                    val alipay = AuthTask(appContext.currentActivity)
+                    val result = alipay.authV2(options.authInfo, true)
+                    promise.resolve(result)
+                    sendEvent("onAuthResult", result)
+                } catch (e: Exception) {
+                    promise.reject(e.toCodedException())
+                }
             }
             Thread(runnable).start()
         }
 
         AsyncFunction("pay") { options: PayOptions, promise: Promise ->
             val runnable = Runnable {
-                val alipay = PayTask(appContext.currentActivity)
-                val result = alipay.payV2(options.orderInfo, true)
-                promise.resolve(result)
-                sendEvent("onPayResult", result)
+                try {
+                    val alipay = PayTask(appContext.currentActivity)
+                    val result = alipay.payV2(options.orderInfo, true)
+                    promise.resolve(result)
+                    sendEvent("onPayResult", result)
+                } catch (e: Exception) {
+                    promise.reject(e.toCodedException())
+                }
             }
 
             Thread(runnable).start()

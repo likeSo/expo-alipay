@@ -44,9 +44,9 @@ public class ExpoAlipayModule: Module {
       }
       
       AsyncFunction("startLog") {
-          AlipaySDK.startLog { log in
+          AlipaySDK.startLog { [weak self] log in
               let logMessage = String(describing: log)
-              self.sendEvent("onLog", [
+              self?.sendEvent("onLog", [
                   "message": logMessage,
                   "timestamp": Date().timeIntervalSince1970 * 1000
               ])

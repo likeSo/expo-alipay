@@ -1,7 +1,7 @@
 
 /*
 
-  回调结果现在还没有做类型支持，但是以下两个例子也许能够帮到你
+  支付结果例子
  {
      "memo" : "xxxxx",
      "result" : "{
@@ -22,7 +22,7 @@
      "resultStatus" : "9000"
  }
  
- 
+ 登录结果例子
  resultStatus=9000
       memo="处理成功"
       result="success=true&auth_code=d9d1b5acc26e461dbfcb6974c8ff5E64&result_code=200"

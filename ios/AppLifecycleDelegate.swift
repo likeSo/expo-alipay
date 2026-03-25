@@ -20,7 +20,7 @@ public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
                 ExpoAlipayModule.moduleInstance?.sendEvent("onAuthResult", (result as? [String: Any]) ?? [:])
             }
         }
-        return true
+        return false
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -33,6 +33,6 @@ public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
                 ExpoAlipayModule.moduleInstance?.sendEvent("onAuthResult", (result as? [String: Any]) ?? [:])
             }
         }
-        return true
+        return false
     }
 }
