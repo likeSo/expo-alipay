@@ -34,6 +34,7 @@ export type PayResultEventPayload = {
   result_status?: string;
   result?: string;
   memo?: string;
+  [key: string]: any;
 };
 
 export type AuthResultEventPayload = {
@@ -41,11 +42,18 @@ export type AuthResultEventPayload = {
   result_status?: string;
   result?: string;
   memo?: string;
+  [key: string]: any;
+};
+
+export type LogEventPayload = {
+  message: string;
+  timestamp: number;
 };
 
 export type ExpoAlipayModuleEvents = {
   onPayResult: (params: PayResultEventPayload) => void;
   onAuthResult: (params: AuthResultEventPayload) => void;
+  onLog: (params: LogEventPayload) => void;
 };
 
 export type PayOptions = {

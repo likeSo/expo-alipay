@@ -8,7 +8,7 @@ public class ExpoAlipayModule: Module {
       Name("ExpoAlipay")
       
       
-      Events("onPayResult", "onAuthResult")
+      Events("onPayResult", "onAuthResult", "onLog")
       
       OnCreate {
           Self.moduleInstance = self
@@ -45,7 +45,11 @@ public class ExpoAlipayModule: Module {
       
       AsyncFunction("startLog") {
           AlipaySDK.startLog { log in
-              print("ExpoAlipayModule：\(String(describing: log))")
+              let logMessage = String(describing: log)
+              self.sendEvent("onLog", [
+                  "message": logMessage,
+                  "timestamp": Date().timeIntervalSince1970 * 1000
+              ])
           }
       }
       
