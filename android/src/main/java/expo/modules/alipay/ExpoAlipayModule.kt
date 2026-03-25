@@ -67,7 +67,11 @@ class ExpoAlipayModule : Module() {
 
 
         AsyncFunction("startLog") {
+            Log.d("ExpoAlipay", "startLog called (no-op on Android)")
+        }
 
+        AsyncFunction("stopLog") {
+            Log.d("ExpoAlipay", "stopLog called (no-op on Android)")
         }
     }
 }

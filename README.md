@@ -34,6 +34,7 @@ npx expo install expo-alikit
 
 ```ts
 import ExpoAlipay from "expo-alikit";
+import type { PayResultEventPayload, AuthResultEventPayload, LogEventPayload } from "expo-alikit";
 ```
 
 ## 支付
@@ -71,13 +72,44 @@ const result = await ExpoAlipay.auth({
 
 ```ts
 import ExpoAlipay from "expo-alikit";
+import { useEvent } from "expo";
 
-/// 通过这种方式监听回调结果
+// 监听支付结果
 const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
-/// 你也可以用`ExpoAlipay.addListener()`语法
 
-console.log(onPayResultPayload);
+// 监听授权结果
+const onAuthResultPayload = useEvent(ExpoAlipay, 'onAuthResult');
+
+// 监听支付宝 SDK 日志（iOS Only）
+const onLogPayload = useEvent(ExpoAlipay, 'onLog');
+console.log('Alipay Log:', onLogPayload?.message);
 ```
+
+你也可以用 `ExpoAlipay.addListener()` 语法：
+
+```ts
+// 监听支付结果
+const subscription = ExpoAlipay.addListener('onPayResult', (payload) => {
+  console.log('Pay Result:', payload);
+});
+
+// 取消监听
+subscription.remove();
+```
+
+## 日志调试（iOS Only）
+
+iOS 平台支持开启支付宝 SDK 日志，用于调试：
+
+```ts
+// 开始监听日志（建议仅在调试时使用）
+await ExpoAlipay.startLog();
+
+// 停止监听日志
+await ExpoAlipay.stopLog();
+```
+
+日志会通过 `onLog` 事件发送到 JS 层，包含 `message` 和 `timestamp` 字段。
 
 # 联系我
 
@@ -85,4 +117,199 @@ QQ 群：682911244
 
 # Roadmap
 
-- [ ] 给支付宝返回数据添加类型。
+- [x] 给支付宝返回数据添加类型。
+- [x] iOS 日志转发到 JS 层。
+
+# API 参考
+
+## 方法
+
+### `getVersion(): Promise<string>`
+
+获取支付宝 SDK 版本号。
+
+**支持平台**: iOS, Android
+
+**返回值**: SDK 版本字符串
+
+---
+
+### `registerApp(appId: string): Promise<boolean>`
+
+注册支付宝应用（Android 防黑产场景使用）。
+
+**支持平台**: Android
+
+**参数**:
+- `appId`: 支付宝开放平台应用 ID
+
+**返回值**: 是否注册成功
+
+**参考**: [支付宝官方文档](https://opendocs.alipay.com/open/00dn75?pathHash=22ed0058#%E5%95%86%E6%88%B7appId%E6%B3%A8%E5%86%8C)
+
+---
+
+### `setSandboxMode(mode: 'sandbox' | 'online' | 'pre_sandbox'): Promise<void>`
+
+设置沙箱模式（仅 Android）。
+
+**支持平台**: Android
+
+**参数**:
+- `mode`: 环境模式
+  - `'sandbox'`: 沙箱环境
+  - `'online'`: 生产环境
+  - `'pre_sandbox'`: 预发布环境
+
+---
+
+### `pay(options: PayOptions): Promise<any>`
+
+发起支付宝支付。
+
+**支持平台**: iOS, Android
+
+**参数**:
+- `options.orderInfo`: 订单信息字符串（由后端生成）
+- `options.scheme`: iOS URL Scheme，需与 app.json 配置一致
+- `options.universalLink`: iOS Universal Link，需与 app.json 配置一致
+
+**返回值**:
+- Android: 直接返回支付结果
+- iOS: 通过 `onPayResult` 事件返回结果
+
+**注意**: iOS 必须通过事件监听获取结果
+
+---
+
+### `auth(options: AuthOptions): Promise<any>`
+
+发起支付宝授权登录。
+
+**支持平台**: iOS, Android
+
+**参数**:
+- `options.authInfo`: 授权信息字符串（由后端生成）
+- `options.scheme`: iOS URL Scheme，需与 app.json 配置一致
+- `options.universalLink`: iOS Universal Link，需与 app.json 配置一致
+
+**返回值**:
+- Android: 直接返回授权结果
+- iOS: 通过 `onAuthResult` 事件返回结果
+
+**注意**: iOS 必须通过事件监听获取结果
+
+---
+
+### `startLog(): Promise<void>`
+
+开启支付宝 SDK 日志（用于调试）。
+
+**支持平台**: iOS（Android 为 no-op）
+
+**说明**: 日志会通过 `onLog` 事件发送到 JS 层
+
+---
+
+### `stopLog(): Promise<void>`
+
+关闭支付宝 SDK 日志。
+
+**支持平台**: iOS（Android 为 no-op）
+
+---
+
+## 事件
+
+### `onPayResult`
+
+支付结果回调。
+
+**Payload 类型**: `PayResultEventPayload`
+
+```typescript
+{
+  resultStatus?: string;    // 结果状态码 (如 "9000" 表示成功)
+  result_status?: string;   // 兼容字段
+  result?: string;          // 结果详情（JSON 字符串）
+  memo?: string;            // 提示信息
+  [key: string]: any;       // 其他可能的字段
+}
+```
+
+**常见 resultStatus**:
+- `9000`: 订单支付成功
+- `8000`: 正在处理中
+- `4000`: 订单支付失败
+- `5000`: 重复请求
+- `6001`: 用户中途取消
+- `6002`: 网络连接出错
+
+---
+
+### `onAuthResult`
+
+授权结果回调。
+
+**Payload 类型**: `AuthResultEventPayload`
+
+```typescript
+{
+  resultStatus?: string;    // 结果状态码
+  result_status?: string;   // 兼容字段
+  result?: string;          // 授权结果（包含 auth_code）
+  memo?: string;            // 提示信息
+  [key: string]: any;       // 其他可能的字段
+}
+```
+
+---
+
+### `onLog`
+
+支付宝 SDK 日志（iOS Only）。
+
+**Payload 类型**: `LogEventPayload`
+
+```typescript
+{
+  message: string;    // 日志内容
+  timestamp: number;  // 时间戳（毫秒）
+}
+```
+
+---
+
+## 类型导出
+
+```typescript
+import type {
+  PayOptions,
+  AuthOptions,
+  PayResultEventPayload,
+  AuthResultEventPayload,
+  LogEventPayload,
+  ExpoAlipayModuleEvents
+} from 'expo-alikit';
+```
+
+---
+
+## 平台差异说明
+
+| 功能 | iOS | Android | Web |
+|------|-----|---------|-----|
+| 支付 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
+| 授权 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
+| 获取版本 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
+| 注册应用 | ❌ 无需 | ✅ 支持 | ❌ 不支持 |
+| 沙箱模式 | ❌ 无需 | ✅ 支持 | ❌ 不支持 |
+| SDK 日志 | ✅ 支持 | ⚠️ No-op | ❌ 不支持 |
+
+---
+
+## 相关链接
+
+- [支付宝开放平台](https://open.alipay.com/)
+- [支付宝 App 支付文档](https://opendocs.alipay.com/open/204/105051/)
+- [Expo Modules 文档](https://docs.expo.dev/modules/overview/)
