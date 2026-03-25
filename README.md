@@ -85,6 +85,18 @@ const onLogPayload = useEvent(ExpoAlipay, 'onLog');
 console.log('Alipay Log:', onLogPayload?.message);
 ```
 
+你也可以用 `ExpoAlipay.addListener()` 语法：
+
+```ts
+// 监听支付结果
+const subscription = ExpoAlipay.addListener('onPayResult', (payload) => {
+  console.log('Pay Result:', payload);
+});
+
+// 取消监听
+subscription.remove();
+```
+
 ## 日志调试（iOS Only）
 
 iOS 平台支持开启支付宝 SDK 日志，用于调试：
