@@ -34,6 +34,7 @@ npx expo install expo-alikit
 
 ```ts
 import ExpoAlipay from "expo-alikit";
+import type { PayResultEventPayload, AuthResultEventPayload, LogEventPayload } from "expo-alikit";
 ```
 
 ## 支付
@@ -71,13 +72,32 @@ const result = await ExpoAlipay.auth({
 
 ```ts
 import ExpoAlipay from "expo-alikit";
+import { useEvent } from "expo";
 
-/// 通过这种方式监听回调结果
+// 监听支付结果
 const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
-/// 你也可以用`ExpoAlipay.addListener()`语法
 
-console.log(onPayResultPayload);
+// 监听授权结果
+const onAuthResultPayload = useEvent(ExpoAlipay, 'onAuthResult');
+
+// 监听支付宝 SDK 日志（iOS Only）
+const onLogPayload = useEvent(ExpoAlipay, 'onLog');
+console.log('Alipay Log:', onLogPayload?.message);
 ```
+
+## 日志调试（iOS Only）
+
+iOS 平台支持开启支付宝 SDK 日志，用于调试：
+
+```ts
+// 开始监听日志（建议仅在调试时使用）
+await ExpoAlipay.startLog();
+
+// 停止监听日志
+await ExpoAlipay.stopLog();
+```
+
+日志会通过 `onLog` 事件发送到 JS 层，包含 `message` 和 `timestamp` 字段。
 
 # 联系我
 
@@ -85,4 +105,5 @@ QQ 群：682911244
 
 # Roadmap
 
-- [ ] 给支付宝返回数据添加类型。
+- [x] 给支付宝返回数据添加类型。
+- [x] iOS 日志转发到 JS 层。
