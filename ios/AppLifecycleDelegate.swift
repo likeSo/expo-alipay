@@ -15,10 +15,13 @@ public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
             AlipaySDK.defaultService().processOrder(withPaymentResult: url) { result in
                 ExpoAlipayModule.moduleInstance?.sendEvent("onPayResult", (result as? [String: Any]) ?? [:])
             }
-        } else if url.host == "oauth" {
+            return true
+        }
+        if url.host == "oauth" {
             AlipaySDK.defaultService().processAuth_V2Result(url) { result in
                 ExpoAlipayModule.moduleInstance?.sendEvent("onAuthResult", (result as? [String: Any]) ?? [:])
             }
+            return true
         }
         return false
     }
@@ -28,10 +31,13 @@ public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
             AlipaySDK.defaultService().processOrder(withPaymentResult: url) { result in
                 ExpoAlipayModule.moduleInstance?.sendEvent("onPayResult", (result as? [String: Any]) ?? [:])
             }
-        } else if url.host == "oauth" {
+            return true
+        } 
+        if url.host == "oauth" {
             AlipaySDK.defaultService().processAuth_V2Result(url) { result in
                 ExpoAlipayModule.moduleInstance?.sendEvent("onAuthResult", (result as? [String: Any]) ?? [:])
             }
+            return true
         }
         return false
     }
