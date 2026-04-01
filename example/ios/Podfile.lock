@@ -31,7 +31,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - ExpoAlipay (0.1.0):
+  - ExpoAlipay (0.1.2):
     - AlipaySDK-iOS
     - ExpoModulesCore
   - ExpoAsset (11.1.7):
@@ -1975,7 +1975,7 @@ SPEC CHECKSUMS:
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
   Expo: a40d525c930dd1c8a158e082756ee071955baccb
-  ExpoAlipay: 4edc5c93db400e7ea757acc578ac919c1255f4ba
+  ExpoAlipay: 89d48e1b6013d7e5c6130cf9fdbfcb23e4234198
   ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
   ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
   ExpoFont: cf508bc2e6b70871e05386d71cab927c8524cc8e

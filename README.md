@@ -1,12 +1,13 @@
 # expo-alipay
 
-支付宝支付与授权登录。React Native Alipay support.
+React Native Alipay support. 支付宝授权登录&支付功能的Expo插件包，封装了最新版本的支付宝原生插件。无需任何原生配置。
 
 # 安装
 
 ```shell
 npx expo install expo-alikit
 ```
+
 为什么是`expo-alikit`？因为`expo-alipay`的名字在npm中已经被占用，但后者看起来只是一个demo项目，目前我正在尝试联系作者，看看是否可以让他删掉那个仓库。
 目前为止，用户可能会在alikit和alipay之间产生歧义，只需要记住，alikit只是npm的包名，其他代码相关的地方保持不变。
 
@@ -34,16 +35,19 @@ npx expo install expo-alikit
 
 ```ts
 import ExpoAlipay from "expo-alikit";
-import type { PayResultEventPayload, AuthResultEventPayload, LogEventPayload } from "expo-alikit";
+import type {
+  PayResultEventPayload,
+  AuthResultEventPayload,
+  LogEventPayload,
+} from "expo-alikit";
 ```
 
 ## 支付
 
 ```ts
-
 /// 安卓Only，防黑产操作，推荐在调用支付前调用此方法。
 /// https://opendocs.alipay.com/open/00dn75?pathHash=22ed0058#%E5%95%86%E6%88%B7appId%E6%B3%A8%E5%86%8C
-await ExpoAlipay.registerApp(appId)
+await ExpoAlipay.registerApp(appId);
 
 /// scheme和universalLink需要与app.json中的配置保持一致，仅iOS上需要提供这两个字段。
 const result = await ExpoAlipay.pay({
@@ -75,22 +79,22 @@ import ExpoAlipay from "expo-alikit";
 import { useEvent } from "expo";
 
 // 监听支付结果
-const onPayResultPayload = useEvent(ExpoAlipay, 'onPayResult');
+const onPayResultPayload = useEvent(ExpoAlipay, "onPayResult");
 
 // 监听授权结果
-const onAuthResultPayload = useEvent(ExpoAlipay, 'onAuthResult');
+const onAuthResultPayload = useEvent(ExpoAlipay, "onAuthResult");
 
 // 监听支付宝 SDK 日志（iOS Only）
-const onLogPayload = useEvent(ExpoAlipay, 'onLog');
-console.log('Alipay Log:', onLogPayload?.message);
+const onLogPayload = useEvent(ExpoAlipay, "onLog");
+console.log("Alipay Log:", onLogPayload?.message);
 ```
 
 你也可以用 `ExpoAlipay.addListener()` 语法：
 
 ```ts
 // 监听支付结果
-const subscription = ExpoAlipay.addListener('onPayResult', (payload) => {
-  console.log('Pay Result:', payload);
+const subscription = ExpoAlipay.addListener("onPayResult", (payload) => {
+  console.log("Pay Result:", payload);
 });
 
 // 取消监听
@@ -141,6 +145,7 @@ QQ 群：682911244
 **支持平台**: Android
 
 **参数**:
+
 - `appId`: 支付宝开放平台应用 ID
 
 **返回值**: 是否注册成功
@@ -156,6 +161,7 @@ QQ 群：682911244
 **支持平台**: Android
 
 **参数**:
+
 - `mode`: 环境模式
   - `'sandbox'`: 沙箱环境
   - `'online'`: 生产环境
@@ -170,11 +176,13 @@ QQ 群：682911244
 **支持平台**: iOS, Android
 
 **参数**:
+
 - `options.orderInfo`: 订单信息字符串（由后端生成）
 - `options.scheme`: iOS URL Scheme，需与 app.json 配置一致
 - `options.universalLink`: iOS Universal Link，需与 app.json 配置一致
 
 **返回值**:
+
 - Android: 直接返回支付结果
 - iOS: 通过 `onPayResult` 事件返回结果
 
@@ -189,11 +197,13 @@ QQ 群：682911244
 **支持平台**: iOS, Android
 
 **参数**:
+
 - `options.authInfo`: 授权信息字符串（由后端生成）
 - `options.scheme`: iOS URL Scheme，需与 app.json 配置一致
 - `options.universalLink`: iOS Universal Link，需与 app.json 配置一致
 
 **返回值**:
+
 - Android: 直接返回授权结果
 - iOS: 通过 `onAuthResult` 事件返回结果
 
@@ -238,6 +248,7 @@ QQ 群：682911244
 ```
 
 **常见 resultStatus**:
+
 - `9000`: 订单支付成功
 - `8000`: 正在处理中
 - `4000`: 订单支付失败
@@ -273,8 +284,8 @@ QQ 群：682911244
 
 ```typescript
 {
-  message: string;    // 日志内容
-  timestamp: number;  // 时间戳（毫秒）
+  message: string; // 日志内容
+  timestamp: number; // 时间戳（毫秒）
 }
 ```
 
@@ -289,21 +300,21 @@ import type {
   PayResultEventPayload,
   AuthResultEventPayload,
   LogEventPayload,
-  ExpoAlipayModuleEvents
-} from 'expo-alikit';
+  ExpoAlipayModuleEvents,
+} from "expo-alikit";
 ```
 
 ---
 
 ## 平台差异说明
 
-| 功能 | iOS | Android | Web |
-|------|-----|---------|-----|
-| 支付 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
-| 授权 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
-| 获取版本 | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
-| 注册应用 | ❌ 无需 | ✅ 支持 | ❌ 不支持 |
-| 沙箱模式 | ❌ 无需 | ✅ 支持 | ❌ 不支持 |
+| 功能     | iOS     | Android  | Web       |
+| -------- | ------- | -------- | --------- |
+| 支付     | ✅ 支持 | ✅ 支持  | ❌ 不支持 |
+| 授权     | ✅ 支持 | ✅ 支持  | ❌ 不支持 |
+| 获取版本 | ✅ 支持 | ✅ 支持  | ❌ 不支持 |
+| 注册应用 | ❌ 无需 | ✅ 支持  | ❌ 不支持 |
+| 沙箱模式 | ❌ 无需 | ✅ 支持  | ❌ 不支持 |
 | SDK 日志 | ✅ 支持 | ⚠️ No-op | ❌ 不支持 |
 
 ---

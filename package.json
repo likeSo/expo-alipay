@@ -1,7 +1,7 @@
 {
   "name": "expo-alikit",
-  "version": "0.1.2",
-  "description": "React Native Alipay support. 支付宝授权登录&支付功能的Expo插件包，封装了最新版本的支付宝原生插件。",
+  "version": "0.1.3",
+  "description": "React Native Alipay support. 支付宝授权登录&支付功能的Expo插件包，封装了最新版本的支付宝原生插件。无需任何原生配置。",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
