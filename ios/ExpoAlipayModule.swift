@@ -27,7 +27,11 @@ public class ExpoAlipayModule: Module {
               .payOrder(options.orderInfo,
                         fromScheme: options.scheme ?? "",
                         fromUniversalLink: options.universalLink) { result in
-                  promise.resolve(result)
+                  let resultDict = (result as? [String: Any]) ?? [:]
+                  promise.resolve(resultDict)
+                  // H5 支付场景：回调会被调用，发送事件
+                  // App 支付场景：回调不会被调用，通过 AppLifecycleDelegate 发送事件
+                  self.sendEvent("onPayResult", resultDict)
               }
       }
       
@@ -35,7 +39,11 @@ public class ExpoAlipayModule: Module {
           AlipaySDK.defaultService()
               .auth_V2(withInfo: options.authInfo,
                        fromScheme: options.scheme ?? "") { result in
-                  promise.resolve(result)
+                  let resultDict = (result as? [String: Any]) ?? [:]
+                  promise.resolve(resultDict)
+                  // H5 授权场景：回调会被调用，发送事件
+                  // App 授权场景：回调不会被调用，通过 AppLifecycleDelegate 发送事件
+                  self.sendEvent("onAuthResult", resultDict)
               }
       }
       
