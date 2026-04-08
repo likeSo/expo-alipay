@@ -57,7 +57,7 @@ const result = await ExpoAlipay.pay({
 });
 ```
 
-获取支付结果有两种办法。对于安卓平台，`pay`方法会直接返回支付结果，同时也会发布一条`onPayResult`事件。对于iOS平台，你只能通过`onPayResult`事件来获取支付结果。
+获取支付结果有两种办法。对于安卓平台，`pay`方法会直接返回支付结果，同时也会发布一条`onPayResult`事件。对于iOS平台，`pay`方法也会返回支付结果（但仅在 H5 支付场景下），**建议统一通过`onPayResult`事件来获取支付结果**。
 
 ## 授权登录
 
@@ -70,7 +70,7 @@ const result = await ExpoAlipay.auth({
 });
 ```
 
-获取支付结果有两种办法。对于安卓平台，`auth`方法会直接返回支付结果，同时也会发布一条`onAuthResult`事件。对于iOS平台，你只能通过`onAuthResult`事件来获取支付结果。
+获取授权结果有两种办法。对于安卓平台，`auth`方法会直接返回授权结果，同时也会发布一条`onAuthResult`事件。对于iOS平台，`auth`方法也会返回授权结果（但仅在 H5 授权场景下），**建议统一通过`onAuthResult`事件来获取授权结果**。
 
 ## 事件监听
 
