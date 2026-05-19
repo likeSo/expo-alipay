@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- 修复 iOS 支付宝 App 通过 Universal Link 跳回应用时收不到 `onPayResult` 事件通知的问题
 - 修复 iOS 支付宝未安装时，H5 支付取消收不到 `onPayResult` 事件通知的问题
 - 修复 iOS 支付宝未安装时，H5 授权取消收不到 `onAuthResult` 事件通知的问题
 
