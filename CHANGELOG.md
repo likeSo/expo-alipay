@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.5]
+## [0.1.6]
 
 ### Fixed
 
 - 修复 iOS 支付宝 App 通过 Universal Link 跳回应用时收不到 `onPayResult` 事件通知的问题
+
+## [0.1.5]
+
+### Fixed
+
 - 修复 iOS 支付宝未安装时，H5 支付取消收不到 `onPayResult` 事件通知的问题
 - 修复 iOS 支付宝未安装时，H5 授权取消收不到 `onAuthResult` 事件通知的问题
 
